@@ -1,12 +1,12 @@
 version: '3'
 services:
   mediawiki:
-    image: mediawiki
+    image: mediawiki:latest
     restart: always
+    environment:
+      TZ: 'Asia/Bangkok'
     ports:
       - 80:80
-    links:
-      - database
     volumes:
       - mediawiki:/var/www/html
       # After initial setup, download LocalSettings.php to the same directory as
@@ -41,6 +41,9 @@ services:
     ports:
       - 8081:80
 
+networks:
+  default:
+    name: mediawiki
 volumes:
   mediawiki:
   db-data:
