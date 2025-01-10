@@ -14,18 +14,34 @@ services:
       # the mediawiki service
       # - ./LocalSettings.php:/var/www/html/LocalSettings.php
   # This key also defines the name of the database host used during setup instead of the default "localhost"
-  database:
-    image: mariadb
+  mariadb:
+    image: mariadb:11.4
+    container_name: mariadb
     restart: always
     environment:
       # @see https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/DefaultSettings.php
+      TZ: 'Asia/Bangkok'
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
     volumes:
-      - db:/var/lib/mysql
+      - db-data:/var/lib/mysql
+      - db-config:/etc/mysql/conf.d
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      TZ: 'Asia/Bangkok'
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 0
+      UPLOAD_LIMIT: 1024M
+    ports:
+      - 8081:80
 
 volumes:
   mediawiki:
-  db:
+  db-data:
+  db-config:
